@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
+    <meta name="description" content="Mathware Pro - Sistema inteligente de evaluación académica con quizzes interactivos">
+    <title>Mathware Pro - Sistema de Autenticación</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" as="image" href="unnamed-Photoroom.jpg">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="animated-background" role="presentation" aria-hidden="true"></div>
+    
+    <div class="container">
+        <!-- PANTALLA 1: BIENVENIDA -->
+        <main id="welcome-view" class="view active" role="main" aria-labelledby="welcome-title">
+            <div class="logo-header">
+                <img src="unnamed-Photoroom.jpg" alt="Logo Mathware Pro" class="school-logo" width="200" height="200" loading="eager">
+            </div>
+            <h1 id="welcome-title" class="title">
+                Bienvenido a <span class="gradient-text">MATHWARE</span>
+            </h1>
+            <p class="subtitle">Sistema Inteligente de Evaluación Académica</p>
+            <nav class="auth-buttons" aria-label="Opciones de autenticación">
+                <button id="btn-go-login" class="btn btn-primary" aria-label="Ir a iniciar sesión">
+                    <span class="btn-icon">🔐</span>
+                    <span>Iniciar Sesión</span>
+                </button>
+                <button id="btn-go-register" class="btn btn-secondary" aria-label="Ir a crear cuenta nueva">
+                    <span class="btn-icon">✨</span>
+                    <span>Crear Cuenta</span>
+                </button>
+            </nav>
+        </main>
+
+        <!-- PANTALLA 2: INICIAR SESIÓN -->
+        <section id="login-view" class="view" role="region" aria-labelledby="login-title" aria-hidden="true">
+            <div class="logo-header">
+                <img src="unnamed-Photoroom.jpg" alt="Logo Mathware Pro" class="school-logo-small" width="80" height="80" loading="lazy">
+            </div>
+            <h1 id="login-title" class="title">
+                <span class="gradient-text">Iniciar Sesión</span>
+            </h1>
+            <form class="auth-form" novalidate aria-label="Formulario de inicio de sesión">
+                <div class="input-wrapper">
+                    <label for="login-user" class="required">Usuario</label>
+                    <input type="text" id="login-user" class="input-box" placeholder="Tu nombre de usuario" autocomplete="username" required aria-required="true" aria-invalid="false" aria-describedby="login-user-error" maxlength="50">
+                    <span id="login-user-error" class="field-error" role="alert" aria-live="polite"></span>
+                </div>
+                <div class="input-wrapper">
+                    <label for="login-pass" class="required">Contraseña</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="login-pass" class="input-box" placeholder="Tu contraseña" autocomplete="current-password" required aria-required="true" aria-invalid="false" aria-describedby="login-pass-error" minlength="6">
+                        <button type="button" class="toggle-password" aria-label="Mostrar contraseña" aria-pressed="false">
+                            <span style="font-size: 20px;">👁️</span>
+                        </button>
+                    </div>
+                    <span id="login-pass-error" class="field-error" role="alert" aria-live="polite"></span>
+                </div>
+                <div id="login-error" class="error-message" role="alert" aria-live="assertive" aria-atomic="true"></div>
+                <button type="submit" id="btn-login-submit" class="btn btn-primary full-width" aria-label="Enviar formulario de inicio de sesión">
+                    <span class="btn-text">Iniciar Sesión</span>
+                    <span class="btn-loader" aria-hidden="true"></span>
+                </button>
+                <button type="button" id="btn-login-back" class="btn btn-back-auth" aria-label="Volver a pantalla de bienvenida">
+                    ← Volver
+                </button>
+            </form>
+        </section>
+
+        <!-- PANTALLA 3: CREAR CUENTA -->
+        <section id="register-view" class="view" role="region" aria-labelledby="register-title" aria-hidden="true">
+            <div class="logo-header">
+                <img src="unnamed-Photoroom.jpg" alt="Logo Mathware Pro" class="school-logo-small" width="80" height="80" loading="lazy">
+            </div>
+            <h1 id="register-title" class="title">
+                <span class="gradient-text">Crear Cuenta</span>
+            </h1>
+            <form class="auth-form" novalidate aria-label="Formulario de registro">
+                <div class="input-wrapper">
+                    <label for="register-user" class="required">Usuario</label>
+                    <input type="text" id="register-user" class="input-box" placeholder="Elige tu nombre de usuario" autocomplete="username" required aria-required="true" aria-invalid="false" aria-describedby="register-user-help register-user-error" minlength="3" maxlength="50" pattern="[a-zA-Z0-9_]+">
+                    <span id="register-user-help" class="field-hint">Mínimo 3 caracteres, solo letras, números y guión bajo</span>
+                    <span id="register-user-error" class="field-error" role="alert" aria-live="polite"></span>
+                </div>
+                <div class="input-wrapper">
+                    <label for="register-pass" class="required">Contraseña</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="register-pass" class="input-box" placeholder="Crea una contraseña" autocomplete="new-password" required aria-required="true" aria-invalid="false" aria-describedby="register-pass-help register-pass-error" minlength="4">
+                        <button type="button" class="toggle-password" aria-label="Mostrar contraseña" aria-pressed="false">
+                            <span style="font-size: 20px;">👁️</span>
+                        </button>
+                    </div>
+                    <span id="register-pass-help" class="field-hint">Mínimo 4 caracteres</span>
+                    <div class="password-strength" role="status" aria-live="polite">
+                        <div class="strength-bar">
+                            <div class="strength-fill" data-strength="0"></div>
+                        </div>
+                        <span class="strength-text">Sin contraseña</span>
+                    </div>
+                    <span id="register-pass-error" class="field-error" role="alert" aria-live="polite"></span>
+                </div>
+                <div class="input-wrapper">
+                    <label for="register-pass-confirm" class="required">Confirmar Contraseña</label>
+                    <input type="password" id="register-pass-confirm" class="input-box" placeholder="Repite tu contraseña" autocomplete="new-password" required aria-required="true" aria-invalid="false" aria-describedby="register-pass-confirm-error">
+                    <span id="register-pass-confirm-error" class="field-error" role="alert" aria-live="polite"></span>
+                </div>
+                <div id="register-error" class="error-message" role="alert" aria-live="assertive" aria-atomic="true"></div>
+                <button type="submit" id="btn-register-submit" class="btn btn-primary full-width" aria-label="Enviar formulario de registro">
+                    <span class="btn-text">Crear Cuenta</span>
+                    <span class="btn-loader" aria-hidden="true"></span>
+                </button>
+                <button type="button" id="btn-register-back" class="btn btn-back-auth" aria-label="Volver a pantalla de bienvenida">
+                    ← Volver
+                </button>
+            </form>
+        </section>
+
+        <!-- PANTALLA 4: MENÚ PRINCIPAL -->
+        <main id="menu-view" class="view" role="main" aria-labelledby="menu-title" aria-hidden="true">
+            <div class="logo-header">
+                <img src="unnamed-Photoroom.jpg" alt="Logo Mathware Pro" class="school-logo" width="200" height="200" loading="lazy">
+            </div>
+            <h1 id="menu-title" class="title">
+                <span class="gradient-text">MATHWARE</span>
+            </h1>
+            <h2 id="welcome-user" class="subtitle-welcome">¡Bienvenido/a!</h2>
+            <nav class="menu-buttons" aria-label="Menú principal">
+                <button id="btn-play" class="btn btn-primary" aria-label="Comenzar nuevo quiz">
+                    <span class="btn-icon">🎯</span>
+                    <span>Comenzar Quiz</span>
+                </button>
+                <button id="btn-history" class="btn btn-secondary" aria-label="Ver historial de partidas">
+                    <span class="btn-icon">📊</span>
+                    <span>Historial</span>
+                </button>
+                <button id="btn-logout" class="btn btn-tertiary" aria-label="Cerrar sesión actual">
+                    <span class="btn-icon">🚪</span>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </nav>
+            <footer class="credits">
+                <p>Creado por Diego Alejandro Buitrago Montaño 9°</p>
+            </footer>
+        </main>
+
+        <!-- PANTALLA 5: SELECCIÓN DE TEMA -->
+        <section id="select-theme-view" class="view" role="region" aria-labelledby="theme-title" aria-hidden="true">
+            <h1 id="theme-title" class="title">
+                Selecciona la <span class="gradient-text">temática</span>
+            </h1>
+            <div id="theme-buttons" class="theme-buttons" role="list" aria-label="Lista de temáticas disponibles"></div>
+            <button id="btn-theme-back" class="btn btn-back" aria-label="Volver al menú principal">
+                ← Volver
+            </button>
+        </section>
+        
+        <!-- PANTALLA 6: JUEGO -->
+        <section id="playing-view" class="view" role="region" aria-labelledby="game-title" aria-hidden="true">
+            <h1 id="game-title" class="sr-only">Pantalla de juego activa</h1>
+            
+            <button id="btn-pause" class="btn-pause-corner" aria-label="Pausar juego" aria-pressed="false">
+                ⏸️
+            </button>
+            
+            <div class="game-header" role="status" aria-live="polite" aria-atomic="false">
+                <div class="stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Tiempo</div>
+                        <div id="timer" class="stat-value" aria-live="off" aria-label="Tiempo restante">240</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Puntaje</div>
+                        <div id="score" class="stat-value" aria-live="polite" aria-label="Puntaje actual">0 / 20</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Pregunta</div>
+                        <div id="question-counter" class="stat-value" aria-live="polite" aria-label="Número de pregunta">1 / 20</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="question-card">
+                <div id="difficulty" class="difficulty-badge" role="status" aria-label="Nivel de dificultad"></div>
+                <h2 id="question" class="question-text" tabindex="0" aria-live="assertive"></h2>
+            </div>
+            
+            <div id="options" class="options-grid" role="radiogroup" aria-labelledby="question" aria-required="true"></div>
+            
+            <div class="progress-container" role="progressbar" aria-valuemin="0" aria-valuemax="20" aria-valuenow="1" aria-label="Progreso del quiz">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 5%"></div>
+                </div>
+                <span class="progress-text sr-only">Pregunta 1 de 20</span>
+            </div>
+        </section>
+
+        <!-- PANTALLA 7: RESULTADOS -->
+        <section id="result-view" class="view" role="region" aria-labelledby="result-title" aria-hidden="true">
+            <div class="result-container">
+                <div class="result-icon">🎉</div>
+                <h1 id="result-title" class="title">
+                    ¡Quiz <span class="gradient-text">Completado</span>!
+                </h1>
+                <div class="result-stats" role="status" aria-live="polite">
+                    <div class="result-stat-item">
+                        <p class="result-label">Puntaje Final</p>
+                        <p id="final-score" class="result-value" aria-label="Puntaje final obtenido"></p>
+                    </div>
+                    <div class="result-stat-item">
+                        <p class="result-label">Calificación</p>
+                        <p id="final-grade" class="result-value gradient-text" aria-label="Calificación obtenida"></p>
+                    </div>
+                </div>
+                <p id="result-message" class="result-message">¡Excelente trabajo! Sigue mejorando.</p>
+                <button id="btn-result-back" class="btn btn-primary" aria-label="Volver al menú principal">Volver al Menú</button>
+            </div>
+        </section>
+
+        <!-- PANTALLA 8: HISTORIAL -->
+        <section id="history-view" class="view" role="region" aria-labelledby="history-title" aria-hidden="true">
+            <h1 id="history-title" class="title">
+                Estadísticas y <span class="gradient-text">Rendimiento</span>
+            </h1>
+            <div class="historial-grid">
+                <article class="history-card">
+                    <div class="card-header-modern">
+                        <div class="card-icon">🏆</div>
+                        <div>
+                            <h2>Top Global</h2>
+                            <p>Mejores puntajes</p>
+                        </div>
+                    </div>
+                    <div id="top-global" class="card-content-modern" role="list" aria-label="Lista de mejores puntajes globales"></div>
+                </article>
+                <article class="history-card">
+                    <div class="card-header-modern">
+                        <div class="card-icon">📈</div>
+                        <div>
+                            <h2>Mi Historial</h2>
+                            <p id="my-history-count" aria-live="polite">0 partidas</p>
+                        </div>
+                    </div>
+                    <div id="my-history" class="card-content-modern" role="list" aria-label="Lista de historial personal"></div>
+                </article>
+            </div>
+            <button id="btn-history-back" class="btn btn-back" aria-label="Volver al menú principal">
+                ← Volver
+            </button>
+        </section>
+    </div>
+    
+    <!-- Toast Container -->
+    <div class="toast-container" aria-live="polite" aria-atomic="true"></div>
+    
+    <!-- ========================================
+         MODALES GLOBALES (FUERA DEL CONTAINER)
+         ======================================== -->
+    
+    <!-- Modal Pausa -->
+    <div id="pause-modal-global" class="overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title-global" aria-hidden="true">
+        <div class="modal-card">
+            <div class="modal-icon">⏸️</div>
+            <h2 id="pause-title-global" class="modal-title">Menú de Pausa</h2>
+            <p class="modal-text" role="status">El temporizador sigue corriendo</p>
+            <div class="modal-buttons">
+                <button id="btn-resume-global" class="btn btn-primary" aria-label="Reanudar juego">Continuar</button>
+                <button id="btn-quit-global" class="btn btn-danger-outline" aria-label="Abandonar juego y volver al inicio">Volver al Inicio</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Feedback -->
+    <div id="feedback-modal-global" class="overlay" role="dialog" aria-modal="true" aria-labelledby="feedback-title-global" aria-describedby="feedback-text-global" aria-hidden="true">
+        <div class="modal-card">
+            <div id="feedback-icon-global" class="modal-icon" aria-hidden="true"></div>
+            <h2 id="feedback-title-global" class="modal-title"></h2>
+            <p id="feedback-text-global" class="modal-text"></p>
+            <div class="modal-buttons">
+                <button id="btn-next-global" class="btn btn-primary" aria-label="Continuar a siguiente pregunta">Siguiente Pregunta</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
