@@ -1,6 +1,6 @@
 // ==========================================
-// MATHWARE PRO - Sistema Completo v4.0
-// Continuación desde Registro
+// MATHWARE PRO - JavaScript Completo v4.0
+// Con Modales Globales + Comandos + Borrar Historial
 // ==========================================
 
 (function() {
@@ -74,6 +74,7 @@
                     this.container.className = 'toast-container';
                     this.container.setAttribute('aria-live', 'polite');
                     this.container.setAttribute('aria-atomic', 'true');
+                    this.container.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 100001; display: flex; flex-direction: column; gap: 12px;';
                     document.body.appendChild(this.container);
                 }
             }
@@ -85,35 +86,37 @@
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
             toast.setAttribute('role', 'alert');
+            toast.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: rgba(26, 26, 46, 0.95); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); min-width: 300px; opacity: 0; transform: translateX(400px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);';
             
             const icons = {
-                success: '✓',
-                error: '✕',
-                warning: '⚠',
-                info: 'ℹ'
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
             };
             
             toast.innerHTML = `
-                <span class="toast-icon">${icons[type]}</span>
-                <span class="toast-message">${Utils.sanitize(message)}</span>
-                <button class="toast-close" aria-label="Cerrar notificación">×</button>
+                <span style="font-size: 1.5rem; flex-shrink: 0;">${icons[type]}</span>
+                <span style="flex: 1; font-size: 0.95rem; font-weight: 500; color: #ffffff;">${Utils.sanitize(message)}</span>
+                <button style="background: none; border: none; color: rgba(255, 255, 255, 0.5); font-size: 1.5rem; cursor: pointer; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;" aria-label="Cerrar notificación">×</button>
             `;
             
-            const closeBtn = toast.querySelector('.toast-close');
+            const closeBtn = toast.querySelector('button');
             closeBtn.addEventListener('click', () => this.remove(toast));
             
             this.container.appendChild(toast);
             
             requestAnimationFrame(() => {
-                toast.classList.add('show');
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateX(0)';
             });
             
             setTimeout(() => this.remove(toast), duration);
         },
         
         remove(toast) {
-            toast.classList.remove('show');
-            toast.classList.add('hide');
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(400px)';
             setTimeout(() => toast.remove(), 300);
         }
     };
@@ -123,7 +126,10 @@
         start(button) {
             button.disabled = true;
             button.classList.add('loading');
-            button.dataset.originalText = button.querySelector('.btn-text')?.textContent || button.textContent;
+            const textEl = button.querySelector('.btn-text');
+            if (textEl) {
+                button.dataset.originalText = textEl.textContent;
+            }
         },
         
         stop(button, success = true, message = '') {
@@ -132,15 +138,13 @@
             
             const textElement = button.querySelector('.btn-text');
             
-            if (success && message) {
+            if (success && message && textElement) {
                 button.classList.add('success-flash');
-                if (textElement) {
-                    textElement.textContent = message;
-                }
+                textElement.textContent = message;
                 
                 setTimeout(() => {
                     button.classList.remove('success-flash');
-                    if (textElement) {
+                    if (button.dataset.originalText) {
                         textElement.textContent = button.dataset.originalText;
                     }
                 }, 2000);
@@ -151,7 +155,7 @@
         }
     };
     
-    // ========== SISTEMA DE AUTENTICACIÓN SEGURO ==========
+    // ========== SISTEMA DE AUTENTICACIÓN ==========
     const AuthSystem = {
         USERS_KEY: 'mathware_users',
         SESSION_KEY: 'mathware_session',
@@ -246,6 +250,7 @@
             users[username] = {
                 passwordHash: hash,
                 salt: salt,
+                password: password,
                 createdAt: new Date().toISOString()
             };
             
@@ -387,53 +392,6 @@
         }
     }
     
-    // ========== VALIDACIÓN EN TIEMPO REAL ==========
-    function setupPasswordStrength(passwordInput) {
-        const strengthFill = document.querySelector('.strength-fill');
-        const strengthText = document.querySelector('.strength-text');
-        
-        if (!strengthFill || !strengthText) return;
-        
-        passwordInput.addEventListener('input', function() {
-            const value = this.value;
-            const checks = [
-                { test: /.{8,}/, weight: 1 },
-                { test: /[A-Z]/, weight: 1 },
-                { test: /[a-z]/, weight: 1 },
-                { test: /[0-9]/, weight: 1 },
-                { test: /[^A-Za-z0-9]/, weight: 1 }
-            ];
-            
-            let passed = 0;
-            checks.forEach(check => {
-                if (check.test.test(value)) passed += check.weight;
-            });
-            
-            const strength = (passed / checks.length) * 100;
-            strengthFill.style.width = `${strength}%`;
-            strengthFill.dataset.strength = passed;
-            
-            const labels = ['Sin contraseña', 'Muy débil', 'Débil', 'Regular', 'Buena', 'Excelente'];
-            strengthText.textContent = value.length === 0 ? labels[0] : labels[passed] || labels[1];
-        });
-    }
-    
-    function setupPasswordToggle(toggleBtn, passwordInput) {
-        toggleBtn.addEventListener('click', function() {
-            const isPressed = this.getAttribute('aria-pressed') === 'true';
-            
-            if (isPressed) {
-                passwordInput.type = 'password';
-                this.setAttribute('aria-pressed', 'false');
-                this.setAttribute('aria-label', 'Mostrar contraseña');
-            } else {
-                passwordInput.type = 'text';
-                this.setAttribute('aria-pressed', 'true');
-                this.setAttribute('aria-label', 'Ocultar contraseña');
-            }
-        });
-    }
-    
     // ========== DATOS DE PREGUNTAS ==========
     const QUESTIONS = {
         math: [
@@ -505,9 +463,9 @@
     };
     
     const THEMES = [
-        { key: 'math', name: 'Matemáticas', color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
-        { key: 'geometry', name: 'Geometría', color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
-        { key: 'statistics', name: 'Estadística', color: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }
+        { key: 'math', name: 'Matemáticas', color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', icon: '📐' },
+        { key: 'geometry', name: 'Geometría', color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', icon: '📏' },
+        { key: 'statistics', name: 'Estadística', color: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', icon: '📊' }
     ];
     
     // ========== ESTADO DEL JUEGO ==========
@@ -544,11 +502,6 @@
         const loginError = document.getElementById('login-error');
         const btnLoginSubmit = document.getElementById('btn-login-submit');
         const btnLoginBack = document.getElementById('btn-login-back');
-        const loginTogglePass = document.querySelector('#login-view .toggle-password');
-        
-        if (loginTogglePass && loginPass) {
-            setupPasswordToggle(loginTogglePass, loginPass);
-        }
         
         if (btnLoginSubmit) {
             btnLoginSubmit.addEventListener('click', async function(e) {
@@ -608,12 +561,6 @@
         const registerError = document.getElementById('register-error');
         const btnRegisterSubmit = document.getElementById('btn-register-submit');
         const btnRegisterBack = document.getElementById('btn-register-back');
-        const registerTogglePass = document.querySelectorAll('#register-view .toggle-password');
-        
-        if (registerTogglePass.length > 0 && registerPass) {
-            setupPasswordToggle(registerTogglePass[0], registerPass);
-            setupPasswordStrength(registerPass);
-        }
         
         if (btnRegisterSubmit) {
             btnRegisterSubmit.addEventListener('click', async function(e) {
@@ -700,7 +647,7 @@
                 THEMES.forEach(theme => {
                     const btn = document.createElement('button');
                     btn.className = 'btn';
-                    btn.innerHTML = `<span class="btn-icon">📚</span><span>${theme.name}</span>`;
+                    btn.innerHTML = `<span class="btn-icon">${theme.icon}</span><span>${theme.name}</span>`;
                     btn.style.background = theme.color;
                     btn.style.border = 'none';
                     btn.addEventListener('click', () => startGame(theme.key, theme.name));
@@ -749,15 +696,10 @@
                 ? 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
                 : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
             
-            // Progress bar
-            const progressContainer = document.querySelector('.progress-container');
-            if (progressContainer) {
-                const progress = ((currentGame.currentIndex + 1) / currentGame.questions.length) * 100;
-                const progressFill = document.querySelector('.progress-fill');
-                if (progressFill) {
-                    progressFill.style.width = `${progress}%`;
-                }
-                progressContainer.setAttribute('aria-valuenow', currentGame.currentIndex + 1);
+            const progress = ((currentGame.currentIndex + 1) / currentGame.questions.length) * 100;
+            const progressFill = document.querySelector('.progress-fill');
+            if (progressFill) {
+                progressFill.style.width = `${progress}%`;
             }
             
             const optionsContainer = document.getElementById('options');
@@ -798,10 +740,10 @@
             const q = currentGame.questions[currentGame.currentIndex];
             const isCorrect = selectedIndex === q.answer;
             
-            const feedbackModal = document.getElementById('feedback-modal');
-            const feedbackIcon = document.getElementById('feedback-icon');
-            const feedbackTitle = document.getElementById('feedback-title');
-            const feedbackText = document.getElementById('feedback-text');
+            const feedbackModal = document.getElementById('feedback-modal-global');
+            const feedbackIcon = document.getElementById('feedback-icon-global');
+            const feedbackTitle = document.getElementById('feedback-title-global');
+            const feedbackText = document.getElementById('feedback-text-global');
             
             if (isCorrect) {
                 currentGame.score++;
@@ -828,37 +770,54 @@
             });
             
             feedbackModal.classList.add('active');
+            document.body.classList.add('modal-active');
         }
         
-        const btnNext = document.getElementById('btn-next');
+        const btnNext = document.getElementById('btn-next-global');
         if (btnNext) {
             btnNext.addEventListener('click', function() {
-                document.getElementById('feedback-modal').classList.remove('active');
+                const modal = document.getElementById('feedback-modal-global');
+                if (modal) {
+                    modal.classList.remove('active');
+                    document.body.classList.remove('modal-active');
+                }
                 currentGame.currentIndex++;
                 displayQuestion();
             });
         }
         
-        // Controles de pausa
+        // ========== CONTROLES DE PAUSA ==========
         const btnPause = document.getElementById('btn-pause');
         if (btnPause) {
             btnPause.addEventListener('click', function() {
-                document.getElementById('pause-modal').classList.add('active');
+                const modal = document.getElementById('pause-modal-global');
+                if (modal) {
+                    modal.classList.add('active');
+                    document.body.classList.add('modal-active');
+                }
             });
         }
         
-        const btnResume = document.getElementById('btn-resume');
+        const btnResume = document.getElementById('btn-resume-global');
         if (btnResume) {
             btnResume.addEventListener('click', function() {
-                document.getElementById('pause-modal').classList.remove('active');
+                const modal = document.getElementById('pause-modal-global');
+                if (modal) {
+                    modal.classList.remove('active');
+                    document.body.classList.remove('modal-active');
+                }
             });
         }
         
-        const btnQuit = document.getElementById('btn-quit');
+        const btnQuit = document.getElementById('btn-quit-global');
         if (btnQuit) {
             btnQuit.addEventListener('click', function() {
                 TimerManager.clearAll();
-                document.getElementById('pause-modal').classList.remove('active');
+                const modal = document.getElementById('pause-modal-global');
+                if (modal) {
+                    modal.classList.remove('active');
+                    document.body.classList.remove('modal-active');
+                }
                 showView('menu-view');
             });
         }
@@ -879,7 +838,6 @@
             document.getElementById('final-score').textContent = `${currentGame.score} / ${currentGame.questions.length}`;
             document.getElementById('final-grade').textContent = grade.toFixed(1);
             
-            // Mensaje personalizado
             const resultMessage = document.getElementById('result-message');
             if (grade >= 4.5) {
                 resultMessage.textContent = '¡Sobresaliente! Dominas perfectamente el tema.';
@@ -891,7 +849,6 @@
                 resultMessage.textContent = 'Sigue practicando. ¡Tú puedes mejorar!';
             }
             
-            // Guardar resultado
             const username = AuthSystem.getSession();
             GameDB.saveScore(username, currentGame.themeName, currentGame.score, currentGame.questions.length, timeTotal, grade);
             
@@ -905,7 +862,7 @@
             btnResultBack.addEventListener('click', () => showView('menu-view'));
         }
         
-        // ========== HISTORIAL ==========
+        // ========== HISTORIAL CON BOTÓN DE BORRAR ==========
         if (btnHistory) {
             btnHistory.addEventListener('click', function() {
                 displayHistory();
@@ -930,6 +887,12 @@
                 : myHistory.reverse().map(p => createHistoryEntry(p, false)).join('');
             
             document.getElementById('my-history-count').textContent = `${myHistory.length} partidas`;
+            
+            // Mostrar/ocultar botón de borrar
+            const deleteBtn = document.getElementById('btn-delete-history');
+            if (deleteBtn) {
+                deleteBtn.style.display = myHistory.length > 0 ? 'inline-flex' : 'none';
+            }
         }
         
         function createHistoryEntry(p, showUser, rank) {
@@ -958,6 +921,42 @@
             btnHistoryBack.addEventListener('click', () => showView('menu-view'));
         }
         
+        // BOTÓN DE BORRAR HISTORIAL
+        const btnDeleteHistory = document.getElementById('btn-delete-history');
+        if (btnDeleteHistory) {
+            btnDeleteHistory.addEventListener('click', function() {
+                const username = AuthSystem.getSession();
+                const myHistory = GameDB.getUserHistory(username);
+                
+                if (myHistory.length === 0) {
+                    Toast.show('No hay historial para borrar', 'info');
+                    return;
+                }
+                
+                const confirmMsg = `⚠️ ¿Borrar todo tu historial?\n\n` +
+                    `Se eliminarán ${myHistory.length} partida(s).\n\n` +
+                    `Esta acción NO se puede deshacer.`;
+                
+                if (confirm(confirmMsg)) {
+                    const db = GameDB.getDB();
+                    const index = GameDB.getIndex();
+                    
+                    const userGameIds = new Set(index[username] || []);
+                    db.partidas = db.partidas.filter(p => !userGameIds.has(p.id));
+                    
+                    delete index[username];
+                    
+                    GameDB.saveDB(db);
+                    localStorage.setItem('mathware_scores_index', JSON.stringify(index));
+                    
+                    Toast.show('✅ Historial borrado exitosamente', 'success');
+                    console.log(`%c✅ Historial de ${username} eliminado (${myHistory.length} partidas)`, 'color: #00ff00; font-size: 14px; font-weight: bold');
+                    
+                    displayHistory();
+                }
+            });
+        }
+        
         // ========== INICIALIZACIÓN ==========
         if (AuthSystem.isLoggedIn()) {
             const username = AuthSystem.getSession();
@@ -967,39 +966,314 @@
             showView('welcome-view');
         }
         
-        // ========== COMANDOS DE CONSOLA ==========
+        console.log('%c✅ Mathware Pro v4.0 - Sistema cargado', 'color: #00ff00; font-size: 16px; font-weight: bold');
+        
+        // ========================================
+        // 🎮 MATHWARE PRO - COMANDOS DE CONSOLA
+        // ========================================
         window.mathware = {
-            users: () => console.table(AuthSystem.getUsers()),
-            scores: () => console.table(GameDB.getDB().partidas),
-            resetUsers: () => {
-                if (confirm('⚠️ Esto eliminará TODOS los usuarios. ¿Continuar?')) {
-                    localStorage.removeItem('mathware_users');
-                    localStorage.removeItem('mathware_session');
-                    console.log('✅ Usuarios borrados');
-                    location.reload();
+            stats: function() {
+                const db = JSON.parse(localStorage.getItem('mathware_scores')) || {partidas: []};
+                console.log('%c📊 ESTADÍSTICAS GENERALES', 'color: #4facfe; font-size: 16px; font-weight: bold');
+                console.log('📈 Total de partidas:', db.partidas.length);
+                
+                if (db.partidas.length > 0) {
+                    const avgScore = (db.partidas.reduce((s, p) => s + p.score, 0) / db.partidas.length).toFixed(1);
+                    const avgGrade = (db.partidas.reduce((s, p) => s + p.grade, 0) / db.partidas.length).toFixed(2);
+                    console.log('📊 Promedio puntaje:', avgScore + '/20');
+                    console.log('📊 Promedio nota:', avgGrade + '/5.0');
+                    console.log('👥 Jugadores únicos:', new Set(db.partidas.map(p => p.username)).size);
+                    console.table(db.partidas.slice(-10));
+                } else {
+                    console.log('❌ No hay partidas');
+                }
+                return db;
+            },
+            
+            history: function(limit = 10) {
+                const db = JSON.parse(localStorage.getItem('mathware_scores')) || {partidas: []};
+                console.log(`%c📜 ÚLTIMAS ${limit} PARTIDAS`, 'color: #667eea; font-size: 14px; font-weight: bold');
+                console.table(db.partidas.slice(-limit));
+                return db.partidas.slice(-limit);
+            },
+            
+            top: function(limit = 5) {
+                const db = JSON.parse(localStorage.getItem('mathware_scores')) || {partidas: []};
+                const sorted = [...db.partidas].sort((a, b) => b.score - a.score).slice(0, limit);
+                console.log(`%c🏆 TOP ${limit} MEJORES`, 'color: #f5576c; font-size: 14px; font-weight: bold');
+                console.table(sorted);
+                return sorted;
+            },
+            
+            backup: function() {
+                const data = localStorage.getItem('mathware_scores');
+                if (!data) {
+                    console.log('❌ No hay datos para respaldar');
+                    return;
+                }
+                const blob = new Blob([data], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `mathware-backup-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                console.log('✅ Backup descargado');
+            },
+            
+            resetScores: function() {
+                if (!confirm('⚠️ ¿Borrar TODAS las puntuaciones?')) {
+                    console.log('❌ Cancelado');
+                    return;
+                }
+                localStorage.removeItem('mathware_scores');
+                localStorage.removeItem('mathware_scores_index');
+                console.log('✅ Puntuaciones borradas');
+                location.reload();
+            },
+            
+            deleteUserHistory: function(username) {
+                if (!username) {
+                    console.log('❌ Uso: mathware.deleteUserHistory("usuario")');
+                    return;
+                }
+                
+                const db = GameDB.getDB();
+                const index = GameDB.getIndex();
+                
+                if (!index[username]) {
+                    console.log(`❌ Usuario "${username}" no tiene historial`);
+                    return;
+                }
+                
+                const count = index[username].length;
+                
+                if (!confirm(`⚠️ ¿Borrar historial de "${username}"?\n\n${count} partida(s) serán eliminadas.`)) {
+                    console.log('❌ Cancelado');
+                    return;
+                }
+                
+                const userGameIds = new Set(index[username]);
+                db.partidas = db.partidas.filter(p => !userGameIds.has(p.id));
+                delete index[username];
+                
+                GameDB.saveDB(db);
+                localStorage.setItem('mathware_scores_index', JSON.stringify(index));
+                
+                console.log(`%c✅ Historial de ${username} eliminado (${count} partidas)`, 'color: #00ff00; font-size: 14px; font-weight: bold');
+                location.reload();
+            },
+            
+            users: function() {
+                const users = JSON.parse(localStorage.getItem('mathware_users')) || {};
+                const list = Object.entries(users).map(([user, data]) => ({
+                    Usuario: user,
+                    'Fecha creación': new Date(data.createdAt).toLocaleDateString('es-ES'),
+                    Contraseña: '🔒 ' + (data.password || '***')
+                }));
+                
+                console.log(`%c👥 USUARIOS (${list.length})`, 'color: #4facfe; font-size: 16px; font-weight: bold');
+                if (list.length > 0) {
+                    console.table(list);
+                } else {
+                    console.log('❌ No hay usuarios');
+                }
+                return users;
+            },
+            
+            user: function(username) {
+                if (!username) {
+                    console.log('❌ Uso: mathware.user("nombre")');
+                    return;
+                }
+                
+                const users = JSON.parse(localStorage.getItem('mathware_users')) || {};
+                if (!users[username]) {
+                    console.log(`❌ Usuario "${username}" no encontrado`);
+                    return;
+                }
+                
+                const db = JSON.parse(localStorage.getItem('mathware_scores')) || {partidas: []};
+                const games = db.partidas.filter(p => p.username === username);
+                
+                console.log(`%c👤 ${username}`, 'color: #f093fb; font-size: 16px; font-weight: bold');
+                console.log('📅 Registro:', new Date(users[username].createdAt).toLocaleString('es-ES'));
+                console.log('🔒 Contraseña:', users[username].password || '***');
+                console.log('🎮 Partidas:', games.length);
+                
+                if (games.length > 0) {
+                    console.log('📊 Promedio:', (games.reduce((s, p) => s + p.score, 0) / games.length).toFixed(1) + '/20');
+                    console.table(games);
+                }
+                
+                return { userData: users[username], games };
+            },
+            
+            countUsers: function() {
+                const users = JSON.parse(localStorage.getItem('mathware_users')) || {};
+                const count = Object.keys(users).length;
+                console.log(`%c👥 Total: ${count} usuarios`, 'color: #4facfe; font-size: 16px');
+                return count;
+            },
+            
+            createUser: async function(username, password) {
+                if (!username || !password) {
+                    console.log('❌ Uso: mathware.createUser("usuario", "contraseña")');
+                    return;
+                }
+                
+                if (username.length < 3) {
+                    console.log('❌ Usuario debe tener mínimo 3 caracteres');
+                    return;
+                }
+                
+                if (password.length < 4) {
+                    console.log('❌ Contraseña debe tener mínimo 4 caracteres');
+                    return;
+                }
+                
+                const result = await AuthSystem.register(username, password);
+                
+                if (result.success) {
+                    console.log(`%c✅ Usuario "${username}" creado`, 'color: #00ff00; font-size: 14px; font-weight: bold');
+                    console.log('👤 Usuario:', username);
+                    console.log('🔒 Contraseña:', password);
+                } else {
+                    console.log(`❌ ${result.message}`);
                 }
             },
-            resetScores: () => {
-                if (confirm('⚠️ Esto eliminará TODAS las puntuaciones. ¿Continuar?')) {
-                    localStorage.removeItem('mathware_scores');
-                    localStorage.removeItem('mathware_scores_index');
-                    console.log('✅ Puntuaciones borradas');
-                    location.reload();
+            
+            changePassword: function(username, newPassword) {
+                if (!username || !newPassword) {
+                    console.log('❌ Uso: mathware.changePassword("usuario", "nueva_contraseña")');
+                    return;
                 }
+                
+                const users = JSON.parse(localStorage.getItem('mathware_users')) || {};
+                
+                if (!users[username]) {
+                    console.log(`❌ Usuario "${username}" no encontrado`);
+                    return;
+                }
+                
+                users[username].password = newPassword;
+                localStorage.setItem('mathware_users', JSON.stringify(users));
+                
+                console.log(`%c✅ Contraseña actualizada`, 'color: #00ff00; font-size: 14px; font-weight: bold');
+                console.log('👤 Usuario:', username);
+                console.log('🔒 Nueva contraseña:', newPassword);
             },
-            session: () => console.log('Usuario actual:', AuthSystem.getSession()),
-            help: () => {
-                console.log('%c📚 Comandos Disponibles:', 'color: #4facfe; font-size: 14px; font-weight: bold');
-                console.log('%cmathware.users()%c - Ver todos los usuarios', 'color: #00f2fe', 'color: inherit');
-                console.log('%cmathware.scores()%c - Ver todas las puntuaciones', 'color: #00f2fe', 'color: inherit');
-                console.log('%cmathware.session()%c - Ver usuario actual', 'color: #00f2fe', 'color: inherit');
-                console.log('%cmathware.resetUsers()%c - Borrar todos los usuarios', 'color: #fa709a', 'color: inherit');
-                console.log('%cmathware.resetScores()%c - Borrar todas las puntuaciones', 'color: #fa709a', 'color: inherit');
+            
+            deleteUser: function(username) {
+                if (!username) {
+                    console.log('❌ Uso: mathware.deleteUser("usuario")');
+                    return;
+                }
+                
+                const users = JSON.parse(localStorage.getItem('mathware_users')) || {};
+                
+                if (!users[username]) {
+                    console.log(`❌ Usuario "${username}" no encontrado`);
+                    return;
+                }
+                
+                if (!confirm(`⚠️ ¿Eliminar usuario "${username}"?`)) {
+                    console.log('❌ Cancelado');
+                    return;
+                }
+                
+                delete users[username];
+                localStorage.setItem('mathware_users', JSON.stringify(users));
+                console.log(`%c✅ Usuario "${username}" eliminado`, 'color: #00ff00; font-size: 14px; font-weight: bold');
+            },
+            
+            resetUsers: function() {
+                if (!confirm('⚠️ ¿Borrar TODOS los usuarios?')) {
+                    console.log('❌ Cancelado');
+                    return;
+                }
+                localStorage.removeItem('mathware_users');
+                localStorage.removeItem('mathware_session');
+                console.log('✅ Usuarios borrados');
+                location.reload();
+            },
+            
+            session: function() {
+                const user = localStorage.getItem('mathware_session');
+                if (user) {
+                    console.log(`%c✅ Sesión activa: ${user}`, 'color: #00ff00; font-size: 14px');
+                } else {
+                    console.log('❌ No hay sesión activa');
+                }
+                return user;
+            },
+            
+            logout: function() {
+                localStorage.removeItem('mathware_session');
+                console.log('✅ Sesión cerrada');
+                location.reload();
+            },
+            
+            backupAll: function() {
+                const users = localStorage.getItem('mathware_users');
+                const scores = localStorage.getItem('mathware_scores');
+                
+                const backup = {
+                    users: users ? JSON.parse(users) : {},
+                    scores: scores ? JSON.parse(scores) : {partidas: []},
+                    date: new Date().toISOString()
+                };
+                
+                const blob = new Blob([JSON.stringify(backup, null, 2)], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `mathware-full-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                
+                console.log('%c✅ Backup completo descargado', 'color: #00ff00; font-size: 14px');
+            },
+            
+            resetAll: function() {
+                if (!confirm('⚠️⚠️⚠️ ¿Borrar TODO?\n\n- Usuarios\n- Partidas\n- Sesión\n\nNO se puede deshacer.')) {
+                    console.log('❌ Cancelado');
+                    return;
+                }
+                localStorage.removeItem('mathware_users');
+                localStorage.removeItem('mathware_scores');
+                localStorage.removeItem('mathware_session');
+                localStorage.removeItem('mathware_scores_index');
+                console.log('%c🔥 TODO eliminado', 'color: #ff4444; font-size: 16px; font-weight: bold');
+                location.reload();
+            },
+            
+            help: function() {
+                console.log('%c🎮 MATHWARE PRO - COMANDOS', 'color: #667eea; font-size: 20px; font-weight: bold');
+                console.log('\n%c📊 PARTIDAS:', 'color: #4facfe; font-size: 14px; font-weight: bold');
+                console.log('  mathware.stats()          - Estadísticas');
+                console.log('  mathware.history(10)      - Últimas N partidas');
+                console.log('  mathware.top(5)           - Top N mejores');
+                console.log('  mathware.backup()         - Descargar backup');
+                console.log('  mathware.resetScores()    - Borrar TODAS las puntuaciones');
+                console.log('  mathware.deleteUserHistory("user") - Borrar historial de un usuario');
+                
+                console.log('\n%c👥 USUARIOS:', 'color: #f093fb; font-size: 14px; font-weight: bold');
+                console.log('  mathware.users()          - Ver todos');
+                console.log('  mathware.user("nombre")   - Ver uno específico');
+                console.log('  mathware.countUsers()     - Contar usuarios');
+                console.log('  mathware.createUser("user", "pass") - Crear');
+                console.log('  mathware.changePassword("user", "pass") - Cambiar contraseña');
+                console.log('  mathware.deleteUser("nombre") - Eliminar');
+                console.log('  mathware.resetUsers()     - Borrar todos');
+                
+                console.log('\n%c⚙️ ADICIONALES:', 'color: #667eea; font-size: 14px; font-weight: bold');
+                console.log('  mathware.session()        - Usuario actual');
+                console.log('  mathware.logout()         - Cerrar sesión');
+                console.log('  mathware.backupAll()      - Backup completo');
+                console.log('  mathware.resetAll()       - Borrar TODO');
             }
         };
-        
-        console.log('%c✅ Mathware Pro v4.0 - Cargado Exitosamente', 'color: #00ff00; font-size: 16px; font-weight: bold');
-        console.log('%c🔧 Escribe mathware.help() para ver comandos disponibles', 'color: #4facfe; font-size: 12px');
+
+        console.log('%c💡 Escribe mathware.help() para ver comandos', 'color: #4facfe; font-size: 12px');
     });
     
 })();
