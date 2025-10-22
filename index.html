@@ -5,51 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     
-    <!-- SEO Optimizado -->
     <meta name="description" content="Mathware Pro - Sistema inteligente de evaluación académica con quizzes interactivos de matemáticas, geometría y estadística. Aprende jugando.">
     <meta name="keywords" content="mathware, quiz matemáticas, evaluación académica, geometría, estadística, educación">
     <meta name="author" content="Diego Alejandro Buitrago Montaño">
     <meta name="robots" content="index, follow">
     
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Mathware Pro - Sistema de Evaluación Académica">
     <meta property="og:description" content="Aprende matemáticas de forma interactiva con nuestro sistema de quizzes inteligentes">
     <meta property="og:image" content="unnamed-Photoroom.jpg">
     
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Mathware Pro">
     <meta name="twitter:description" content="Sistema inteligente de evaluación académica">
     
     <title>Mathware Pro - Sistema de Autenticación Inteligente</title>
     
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="unnamed-Photoroom.jpg">
     
-    <!-- Preconnect para optimizar carga de fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <!-- Fuentes optimizadas con display=swap para evitar FOIT -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Preload recursos críticos -->
     <link rel="preload" as="image" href="unnamed-Photoroom.jpg">
     <link rel="preload" as="style" href="style.css">
     
-    <!-- CSS Principal -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Fondo animado con gradientes -->
     <div class="animated-background" role="presentation" aria-hidden="true">
         <div class="gradient-orb orb-1"></div>
         <div class="gradient-orb orb-2"></div>
         <div class="gradient-orb orb-3"></div>
     </div>
 
-    <!-- Partículas matemáticas flotantes -->
     <div class="math-particles" aria-hidden="true">
         <span class="particle">π</span>
         <span class="particle">∑</span>
@@ -74,7 +64,6 @@
     </div>
 
     <div class="container">
-        <!-- PANTALLA 1: BIENVENIDA -->
         <main id="welcome-view" class="view active" role="main" aria-labelledby="welcome-title">
             <div class="logo-header">
                 <img src="unnamed-Photoroom.jpg" alt="Logo Mathware Pro" class="school-logo" width="200" height="200" loading="eager">
@@ -95,7 +84,6 @@
             </nav>
         </main>
 
-        <!-- PANTALLA 2: INICIAR SESIÓN -->
         <section id="login-view" class="view" role="region" aria-labelledby="login-title" aria-hidden="true">
             <div class="logo-header">
                 <img src="unnamed-Photoroom.jpg" alt="Logo Mathware Pro" class="school-logo-small" width="80" height="80" loading="lazy">
@@ -128,7 +116,6 @@
             </form>
         </section>
 
-        <!-- PANTALLA 3: CREAR CUENTA -->
         <section id="register-view" class="view" role="region" aria-labelledby="register-title" aria-hidden="true">
             <div class="logo-header">
                 <img src="unnamed-Photoroom.jpg" alt="Logo Mathware Pro" class="school-logo-small" width="80" height="80" loading="lazy">
@@ -174,7 +161,6 @@
             </form>
         </section>
 
-        <!-- PANTALLA 4: MENÚ PRINCIPAL -->
         <main id="menu-view" class="view" role="main" aria-labelledby="menu-title" aria-hidden="true">
             <div class="logo-header">
                 <img src="unnamed-Photoroom.jpg" alt="Logo Mathware Pro" class="school-logo" width="200" height="200" loading="lazy">
@@ -202,7 +188,6 @@
             </footer>
         </main>
 
-        <!-- PANTALLA 5: SELECCIÓN DE TEMA -->
         <section id="select-theme-view" class="view" role="region" aria-labelledby="theme-title" aria-hidden="true">
             <h1 id="theme-title" class="title">
                 Selecciona la <span class="gradient-text">temática</span>
@@ -211,7 +196,6 @@
             <button id="btn-theme-back" class="btn btn-back" aria-label="Volver al menú principal">← Volver</button>
         </section>
         
-        <!-- PANTALLA 6: JUEGO -->
         <section id="playing-view" class="view" role="region" aria-labelledby="game-title" aria-hidden="true">
             <h1 id="game-title" class="sr-only">Pantalla de juego activa</h1>
             
@@ -256,7 +240,6 @@
             </div>
         </section>
 
-        <!-- PANTALLA 7: RESULTADOS -->
         <section id="result-view" class="view" role="region" aria-labelledby="result-title" aria-hidden="true">
             <div class="result-container">
                 <div class="result-icon">🎉</div>
@@ -278,7 +261,6 @@
             </div>
         </section>
 
-        <!-- PANTALLA 8: HISTORIAL (SIN BOTÓN ELIMINAR) -->
         <section id="history-view" class="view" role="region" aria-labelledby="history-title" aria-hidden="true">
             <h1 id="history-title" class="title">
                 Estadísticas y <span class="gradient-text">Rendimiento</span>
@@ -310,10 +292,8 @@
         </section>
     </div>
     
-    <!-- Toast Container -->
     <div class="toast-container" aria-live="polite" aria-atomic="true"></div>
     
-    <!-- Modales Globales -->
     <div id="pause-modal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title" aria-hidden="true">
         <div class="modal-card">
             <div class="modal-icon">⏸️</div>
