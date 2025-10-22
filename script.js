@@ -1,14 +1,9 @@
-// ==========================================
-// MATHWARE PRO - JavaScript v5.0 ULTRA
-// Código 100% Profesional y Optimizado
-// ==========================================
-
 (function() {
     'use strict';
 
-    console.log('%c🚀 Mathware Pro v5.0 ULTRA Iniciando...', 'color: #4facfe; font-size: 18px; font-weight: bold; text-shadow: 0 0 10px rgba(79,172,254,0.5)');
+    console.log('%c🚀 Mathware v5.0 Iniciando...', 'color: #4facfe; font-size: 18px; font-weight: bold; text-shadow: 0 0 10px rgba(79,172,254,0.5)');
 
-    // ========== UTILIDADES MEJORADAS ==========
+
     const Utils = {
         debounce(func, wait) {
             let timeout;
@@ -40,7 +35,6 @@
             }).format(date);
         },
 
-        // Validador de fortaleza de contraseña
         getPasswordStrength(password) {
             if (!password) return 0;
             let strength = 0;
@@ -58,7 +52,7 @@
         }
     };
 
-    // ========== GESTIÓN DE TIMERS ==========
+
     const TimerManager = {
         activeTimers: new Set(),
 
@@ -81,7 +75,6 @@
         }
     };
 
-    // ========== SISTEMA DE TOAST ==========
     const Toast = {
         container: null,
 
@@ -137,7 +130,7 @@
         }
     };
 
-    // ========== LOADING BUTTON MEJORADO ==========
+
     const LoadingButton = {
         start(button) {
             button.disabled = true;
@@ -171,7 +164,7 @@
         }
     };
 
-    // ========== SISTEMA DE AUTENTICACIÓN MEJORADO ==========
+
     const AuthSystem = {
         USERS_KEY: 'mathware_users',
         SESSION_KEY: 'mathware_session',
@@ -317,7 +310,6 @@
         }
     };
 
-    // ========== GESTIÓN DE PUNTUACIONES ==========
     const GameDB = {
         DB_KEY: 'mathware_scores',
         INDEX_KEY: 'mathware_scores_index',
@@ -405,7 +397,6 @@
         }
     };
 
-    // ========== NAVEGACIÓN MEJORADA ==========
     function showView(viewId) {
         console.log('🎯 Mostrando vista:', viewId);
         TimerManager.clearAll();
@@ -429,7 +420,7 @@
             console.error('❌ Vista no encontrada:', viewId);
         }
     }
-    // ========== PREGUNTAS POR TEMA (AMPLIADAS) ==========
+
     const QUESTIONS = {
         math: [
             {"question": "¿Cuánto es 2x + 5 = 15?", "options": ["x = 7", "x = 4", "x = 5", "x = 10"], "answer": 2, "difficulty": "Fácil"},
@@ -451,7 +442,6 @@
             {"question": "¿Cuántos grados hay en un círculo completo?", "options": ["180°", "270°", "360°", "450°"], "answer": 2, "difficulty": "Fácil"},
             {"question": "¿Cuál es el valor de π aproximadamente?", "options": ["2.14", "3.14", "4.14", "5.14"], "answer": 1, "difficulty": "Fácil"},
             {"question": "Si 5x = 35, ¿cuánto vale x?", "options": ["5", "6", "7", "8"], "answer": 2, "difficulty": "Fácil"},
-            {"question": "¿Cuál es el resultado de 100 ÷ 4?", "options": ["20", "25", "30", "35"], "answer": 1, "difficulty": "Fácil"}
         ],
         geometry: [
             {"question": "¿Cuántos lados tiene un octógono?", "options": ["6", "8", "10", "12"], "answer": 1, "difficulty": "Fácil"},
@@ -505,7 +495,7 @@
         { key: 'statistics', name: 'Estadística', color: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', icon: '📊' }
     ];
 
-    // ========== ESTADO DEL JUEGO ==========
+
     let currentGame = {
         theme: '',
         themeName: '',
@@ -517,7 +507,7 @@
         timeRemaining: 240
     };
 
-    // ========== CONFETTI (ANIMACIÓN DE ÉXITO) ==========
+
     function createConfetti() {
         const colors = ['#4facfe', '#00f2fe', '#667eea', '#764ba2', '#f093fb', '#f5576c'];
         const confettiCount = 50;
@@ -551,25 +541,25 @@
         }
     }
 
-    // ========== EVENTOS PRINCIPALES ==========
+
     document.addEventListener('DOMContentLoaded', function() {
         console.log('%c✅ DOM Cargado, inicializando sistema...', 'color: #00ff00; font-size: 14px; font-weight: bold');
 
-        // ========== BOTONES DE BIENVENIDA ==========
+
         const btnGoLogin = document.getElementById('btn-go-login');
         const btnGoRegister = document.getElementById('btn-go-register');
 
         if (btnGoLogin) btnGoLogin.addEventListener('click', () => showView('login-view'));
         if (btnGoRegister) btnGoRegister.addEventListener('click', () => showView('register-view'));
 
-        // ========== LOGIN ==========
+
         const loginUser = document.getElementById('login-user');
         const loginPass = document.getElementById('login-pass');
         const loginError = document.getElementById('login-error');
         const btnLoginSubmit = document.getElementById('btn-login-submit');
         const btnLoginBack = document.getElementById('btn-login-back');
 
-        // Toggle mostrar/ocultar contraseña
+
         const loginTogglePassword = document.querySelector('#login-view .toggle-password');
         if (loginTogglePassword && loginPass) {
             loginTogglePassword.addEventListener('click', function() {
@@ -639,7 +629,7 @@
             });
         }
 
-        // ========== REGISTRO ==========
+
         const registerUser = document.getElementById('register-user');
         const registerPass = document.getElementById('register-pass');
         const registerPassConfirm = document.getElementById('register-pass-confirm');
@@ -649,7 +639,6 @@
         const strengthFill = document.querySelector('.strength-fill');
         const strengthText = document.querySelector('.strength-text');
 
-        // Toggle contraseña registro
         const registerTogglePassword = document.querySelector('#register-view .toggle-password');
         if (registerTogglePassword && registerPass) {
             registerTogglePassword.addEventListener('click', function() {
@@ -661,7 +650,6 @@
             });
         }
 
-        // Medidor de fortaleza de contraseña
         if (registerPass && strengthFill && strengthText) {
             registerPass.addEventListener('input', Utils.debounce(function() {
                 const strength = Utils.getPasswordStrength(this.value);
@@ -747,7 +735,6 @@
             });
         }
 
-        // ========== MENÚ PRINCIPAL ==========
         const btnPlay = document.getElementById('btn-play');
         const btnHistory = document.getElementById('btn-history');
         const btnLogout = document.getElementById('btn-logout');
@@ -793,7 +780,6 @@
             });
         }
 
-        // ========== JUEGO ==========
         function startGame(themeKey, themeName) {
             currentGame.theme = themeKey;
             currentGame.themeName = themeName;
@@ -983,7 +969,6 @@
             btnResultBack.addEventListener('click', () => showView('menu-view'));
         }
 
-        // ========== HISTORIAL ==========
         function displayHistory() {
             const username = AuthSystem.getSession();
             const topGlobal = GameDB.getTopScores(10);
@@ -1054,8 +1039,6 @@
                 }
             });
         }
-
-        // ========== INICIALIZACIÓN ==========
         if (AuthSystem.isLoggedIn()) {
             const username = AuthSystem.getSession();
             document.getElementById('welcome-user').textContent = `¡Bienvenido/a, ${Utils.sanitize(username)}!`;
@@ -1067,7 +1050,6 @@
         console.log('%c✅ Mathware Pro v5.0 ULTRA - Sistema cargado completamente', 'color: #00ff00; font-size: 16px; font-weight: bold');
         console.log('%c💡 Escribe mathware.help() en consola para ver comandos disponibles', 'color: #4facfe; font-size: 12px');
 
-        // ========== COMANDOS DE CONSOLA ==========
         window.mathware = {
             help() {
                 console.log('%c📖 COMANDOS DISPONIBLES:', 'color: #4facfe; font-size: 16px; font-weight: bold');
